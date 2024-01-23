@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <metacharset="UTF-8">
+        <title>App</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                margin: 0;
+                padding: 0;
+            }
+            
+            .navbar {
+                background-color: #b8c5d1;
+                padding: 10px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+            
+            .logout-button {
+                background-color: #dc3545;
+                color: white;
+                padding: 5px 10px;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+            
+            .welcome-message {
+                font-size: 24px;
+                font-weight: bold;
+                margin-top: 20px;
+            }
+            
+            .user-info {
+                margin-top: 10px;
+            }
+            
+            .user-info span {
+                font-weight: bold;
+            }
+            
+            .access-token {
+                margin-top: 10px;
+            }
+            
+            .id-token-claims {
+                margin-top: 10px;
+            }
+            
+            #result {
+                margin-top: 20px;
+            }
+            
+            table {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            
+            th, td {
+                border: 1px solid #ddd;
+                padding: 8px;
+                text-align: left;
+            }
+            
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+    <script src="https://unpkg.com/htmx.org/dist/htmx.js"></script>
+</head>
+<body>
+<div class="navbar">
+    <h1>Welcome <span style="font-weight:bold" th:text="${givenName}"></span></h1>
+    <a class="logout-button" href="/logout">Logout</a> <!-- Added logout button -->
+</div>
+    
+<div class="welcome-message">
+    You are successfully logged in as
+    <span th:text="${givenName}"></span>
+</div>
+<table class="user-info">
+    <tr>
+        <th>Email address</th>
+        <td><span th:text="${email}"></span></td>
+    </tr>
+    <tr>
+        <th>Name</th>
+        <td><span th:text="${givenName}"></span></td>
+    </tr>
+
+</table>
+<br><br>
+<button hx-get="/secured" class="btn btn-primary" hx-trigger="click" hx-target="#result">Display Access Token</button>
+
+<div id="result"></div>
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+</body>
+</html>
+
