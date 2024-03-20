@@ -27,4 +27,10 @@ public class LoginController {
 
 	// There is no logout method required in this controller. Spring security will handle it
 
+	@GetMapping("testMapping/*")
+	public String wildcardMapping() {
+		return "test mapping text";
+	}
+
 }
+
