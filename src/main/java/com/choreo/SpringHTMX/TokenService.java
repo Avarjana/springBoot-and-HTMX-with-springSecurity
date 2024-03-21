@@ -1,6 +1,9 @@
 package com.choreo.SpringHTMX;
 
+import com.choreo.SpringHTMX.models.FederatedToken;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
@@ -23,6 +26,18 @@ public class TokenService {
 
     private final OAuth2AuthorizedClientService authorizedClientService;
 
+    @Value("${spring.security.oauth2.client.registration.asgardeo.client-id}")
+    private String clientId;
+
+    @Value("${spring.security.oauth2.client.registration.asgardeo.client-secret}")
+    private String clientSecret;
+
+    @Value("${spring.security.oauth2.client.provider.asgardeo.issuer-uri}")
+    private String tokenEndpoint;
+
+    // Store federated tokens
+    private List<FederatedToken> federated_tokens;
+
     @Autowired
     public TokenService(OAuth2AuthorizedClientService authorizedClientService) {
         this.authorizedClientService = authorizedClientService;
@@ -33,8 +48,19 @@ public class TokenService {
         return builder.build();
     }
 
+    public List<FederatedToken> getFederated_tokens() {
+
+        return federated_tokens;
+    }
+
+    public void setFederated_tokens(List<FederatedToken> federated_tokens) {
+
+        this.federated_tokens = federated_tokens;
+    }
+
     @SuppressWarnings("null")
     public String getRefreshToken(OAuth2AuthenticationToken authentication) {
+
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(),
                 authentication.getName());
@@ -45,6 +71,7 @@ public class TokenService {
     }
 
     public String getAccessToken(OAuth2AuthenticationToken authentication) {
+
         OAuth2AuthorizedClient authorizedClient = authorizedClientService.loadAuthorizedClient(
                 authentication.getAuthorizedClientRegistrationId(),
                 authentication.getName());
@@ -62,15 +89,15 @@ public class TokenService {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("grant_type", "refresh_token");
         map.add("refresh_token", refreshToken);
-        map.add("client_id", "hT4QHkwOVzBfdHm2eXrdFPJ4_bQa");
-        map.add("client_secret", "Q4h43bwbGtWFzL7o5zusgdkBKAruEbDRdt_f7RAoorka");
+        map.add("client_id", clientId);
+        map.add("client_secret", clientSecret);
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map, headers);
 
         try {
 
             ResponseEntity<TokenResponse> response = restTemplate.exchange(
-                    "https://api.asgardeo.io/t/sarindas/oauth2/token",
+                    tokenEndpoint,
                     HttpMethod.POST,
                     request,
                     TokenResponse.class);

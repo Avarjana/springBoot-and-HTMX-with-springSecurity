@@ -1,5 +1,6 @@
 package com.choreo.SpringHTMX;
 
+import com.choreo.SpringHTMX.models.FederatedToken;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -43,8 +44,19 @@ public class SecureResourceController {
 
         String accessToken = tokenService.getAccessToken(authentication);
 
+        String federateTokens = "";
+        if (tokenService.getFederated_tokens() != null) {
+            for (FederatedToken token : tokenService.getFederated_tokens()) {
+                federateTokens = federateTokens.concat(
+                        "<tr><td>" + token.toString() + "</td></tr>");
+            }
+        }
+
         // Create an HTML table with the token value
-        String htmlTable = "<table><tr><th>Access Token</th></tr><tr><td>" + refreshToken + "</td></tr>tr><th>Access Token</th></tr><tr><td>" + accessToken + "</td></tr></table>";
+        String htmlTable =
+                        "<table><tr><th>Refresh Token</th></tr><tr><td>" + refreshToken +
+                        "</td></tr><tr><th>Access Token</th></tr><tr><td>" + accessToken +
+                        "</td></tr><tr><th>Federated Tokens</th></tr>" + federateTokens + "</table>";
 
         return htmlTable;
     }
